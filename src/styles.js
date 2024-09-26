@@ -73,6 +73,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  turntableContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 300,   // Adjusted for larger turntable
+    height: 300,  // Adjusted for larger turntable
+    borderRadius: 150,
+    borderWidth: 2,
+    borderColor: '#000',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  
 });
 
 export default styles;

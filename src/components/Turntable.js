@@ -1,6 +1,6 @@
 /**
  * Turntable.js - Main logic for spinning the turntable and managing options.
- * Options are auto-saved and reflected on the turntable and input fields in real-time, including removals.
+ * The turntable now spins a random number of degrees.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -14,6 +14,7 @@ const Turntable = () => {
   const [spinValue] = useState(new Animated.Value(0));
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState([]);
+  const [rotationAngle, setRotationAngle] = useState(0); // Track current rotation angle
 
   // Key for AsyncStorage
   const STORAGE_KEY = '@options_list';
@@ -52,31 +53,39 @@ const Turntable = () => {
     saveOptions(updatedOptions); // Save updated options list
   };
 
+  // Function to spin the turntable a random number of degrees
   const spinTurntable = () => {
     if (options.length === 0) return;
 
-    spinValue.setValue(0);
+    const randomDegrees = Math.floor(Math.random() * 360) + 720; // Spin at least two full rotations + random degrees
+    const newRotationAngle = rotationAngle + randomDegrees; // Add to the current rotation
+
+    setRotationAngle(newRotationAngle); // Update the rotation angle state
 
     Animated.timing(spinValue, {
-      toValue: 1,
+      toValue: newRotationAngle, // Use the new rotation angle
       duration: 3000,
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     }).start(() => {
-      const randomIndex = Math.floor(Math.random() * options.length);
-      setSelectedOption(options[randomIndex]);
+      const segmentAngle = 360 / options.length;
+      const normalizedAngle = newRotationAngle % 360; // Normalize the angle between 0 and 360
+      const selectedIndex = Math.floor((360 - normalizedAngle) / segmentAngle) % options.length;
+      setSelectedOption(options[selectedIndex]); // Select the option based on the angle
     });
   };
 
   const spin = spinValue.interpolate({
-    inputRange: [0, 1],
+    inputRange: [0, 360],
     outputRange: ['0deg', '360deg'],
   });
 
   return (
     <View style={styles.container}>
       <OptionInput onUpdateOptions={updateOptions} initialOptions={options} />
-      <TurntableVisual spin={spin} options={options} />
+      <Animated.View style={{ transform: [{ rotate: spin }] }}>
+        <TurntableVisual options={options} />
+      </Animated.View>
       <TouchableOpacity style={styles.spinButton} onPress={spinTurntable}>
         <Text style={styles.spinText}>Spin</Text>
       </TouchableOpacity>
