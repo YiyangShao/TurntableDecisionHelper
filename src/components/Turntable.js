@@ -1,6 +1,6 @@
 /**
  * Turntable.js - This component handles the display and logic of the turntable.
- * Users can input their own decision options and spin the turntable to randomly select one.
+ * Users can input their own decision options, remove them, and spin the turntable to randomly select one.
  */
 
 import React, { useState } from 'react';
@@ -13,10 +13,17 @@ const Turntable = () => {
   const [inputValue, setInputValue] = useState('');
 
   const addOption = () => {
-    if (inputValue.trim()) {
-      setOptions([...options, inputValue.trim()]);
+    const trimmedInput = inputValue.trim();
+
+    // Validate to prevent empty or duplicate options
+    if (trimmedInput && !options.includes(trimmedInput)) {
+      setOptions([...options, trimmedInput]);
       setInputValue(''); // Reset the input field
     }
+  };
+
+  const removeOption = (option) => {
+    setOptions(options.filter((opt) => opt !== option));
   };
 
   const spinTurntable = () => {
@@ -54,11 +61,16 @@ const Turntable = () => {
       />
       <Button title="Add Option" onPress={addOption} />
 
-      {/* Display added options */}
+      {/* Display added options with remove functionality */}
       <FlatList
         data={options}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.option}>{item}</Text>}
+        renderItem={({ item }) => (
+          <View style={styles.optionRow}>
+            <Text style={styles.option}>{item}</Text>
+            <Button title="Remove" onPress={() => removeOption(item)} />
+          </View>
+        )}
         style={styles.optionList}
       />
 
@@ -97,8 +109,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionList: {
-    maxHeight: 100,
+    maxHeight: 150,
     marginBottom: 20,
+  },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 5,
   },
   turntable: {
     width: 200,
