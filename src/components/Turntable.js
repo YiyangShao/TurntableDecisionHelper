@@ -1,11 +1,13 @@
 /**
  * Turntable.js - Main logic for spinning the turntable and managing options.
  * The turntable now spins a random number of degrees, with a stationary pointer at the top.
+ * Plays a sound when the pointer crosses the section border, throttled to avoid high-frequency issues.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, TouchableOpacity, Text, Animated, Easing } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Audio } from 'expo-av';
 import TurntableVisual from './TurntableVisual';
 import OptionInput from './OptionInput';
 import styles from '../styles';
@@ -15,13 +17,35 @@ const Turntable = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState([]);
   const [rotationAngle, setRotationAngle] = useState(0); // Track current rotation angle
+  const [sound, setSound] = useState(); // Store the sound object
+  const sectionAngle = 360 / options.length; // Calculate the angle of each section
+
+  const lastPlayedSection = useRef(null); // Keep track of the last section that triggered the sound
+  const lastSoundPlayedTime = useRef(0); // Keep track of when the sound was last played
+  const minSoundInterval = 100; // Minimum time interval between sound plays (in milliseconds)
 
   // Key for AsyncStorage
   const STORAGE_KEY = '@options_list';
 
   useEffect(() => {
-    // Load options from AsyncStorage when the component mounts
     loadOptions();
+    return () => {
+      if (sound) {
+        sound.unloadAsync(); // Unload sound on component unmount
+      }
+    };
+  }, [sound]);
+
+  // Load sound file
+  async function loadSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/sounds/click.mp3') // Replace with your sound file path
+    );
+    setSound(sound);
+  }
+
+  useEffect(() => {
+    loadSound();
   }, []);
 
   const loadOptions = async () => {
@@ -53,6 +77,27 @@ const Turntable = () => {
     saveOptions(updatedOptions); // Save updated options list
   };
 
+  const playClickSound = async () => {
+    const currentTime = Date.now();
+    if (currentTime - lastSoundPlayedTime.current >= minSoundInterval) {
+      // Ensure that enough time has passed since the last sound play
+      if (sound) {
+        await sound.replayAsync();
+      }
+      lastSoundPlayedTime.current = currentTime; // Update the time the sound was last played
+    }
+  };
+
+  const checkForSectionCrossing = (currentAngle) => {
+    const normalizedAngle = currentAngle % 360;
+    const currentSection = Math.floor(normalizedAngle / sectionAngle);
+
+    if (currentSection !== lastPlayedSection.current) {
+      playClickSound();
+      lastPlayedSection.current = currentSection;
+    }
+  };
+
   // Function to spin the turntable a random number of degrees
   const spinTurntable = () => {
     if (options.length === 0) return;
@@ -61,6 +106,7 @@ const Turntable = () => {
     const newRotationAngle = rotationAngle + randomDegrees; // Add to the current rotation
 
     setRotationAngle(newRotationAngle); // Update the rotation angle state
+    lastPlayedSection.current = null; // Reset the section tracker
 
     Animated.timing(spinValue, {
       toValue: newRotationAngle, // Use the new rotation angle
@@ -72,6 +118,11 @@ const Turntable = () => {
       const normalizedAngle = newRotationAngle % 360; // Normalize the angle between 0 and 360
       const selectedIndex = Math.floor((360 - normalizedAngle) / segmentAngle) % options.length;
       setSelectedOption(options[selectedIndex]); // Select the option based on the angle
+    });
+
+    // Set up a listener for each animation frame
+    spinValue.addListener(({ value }) => {
+      checkForSectionCrossing(value);
     });
   };
 
