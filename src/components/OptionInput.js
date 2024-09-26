@@ -1,17 +1,18 @@
 /**
  * OptionInput.js - Handles input for adding multiple decision options, each with its own input line.
  * Allows users to remove individual input lines and auto-saves changes.
- * Displays loaded options in the input fields.
+ * Initial placeholders are set to "burger", "taco", and "ramen".
+ * The remove button only appears for the third option and beyond.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Button } from 'react-native';
 import styles from '../styles';
 
 const OptionInput = ({ onUpdateOptions, initialOptions }) => {
-  const [inputValues, setInputValues] = useState(['']); // Start with one empty input line
+  // Set initial placeholders for options
+  const [inputValues, setInputValues] = useState(['burger', 'taco', 'ramen']);
 
-  // Load initial options into input fields
   useEffect(() => {
     if (initialOptions && initialOptions.length > 0) {
       setInputValues(initialOptions);
@@ -49,9 +50,12 @@ const OptionInput = ({ onUpdateOptions, initialOptions }) => {
             value={inputValue}
             onChangeText={(value) => handleAddOption(index, value)}
           />
-          <TouchableOpacity onPress={() => handleRemoveLine(index)} style={styles.removeButton}>
-            <Text style={styles.removeButtonText}>-</Text>
-          </TouchableOpacity>
+          {/* Only show the remove button for the third option and beyond */}
+          {index >= 2 && (
+            <TouchableOpacity onPress={() => handleRemoveLine(index)} style={styles.removeButton}>
+              <Text style={styles.removeButtonText}>-</Text>
+            </TouchableOpacity>
+          )}
         </View>
       ))}
       <Button title="Add Another Option" onPress={handleAddNewLine} />
