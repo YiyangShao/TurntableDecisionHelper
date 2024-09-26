@@ -21,16 +21,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  optionList: {
-    maxHeight: 150,
-    marginBottom: 20,
-  },
-  optionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
   turntable: {
     width: 200,
     height: 200,
@@ -41,9 +31,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
+  optionContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -50 }, { translateY: -50 }],
+  },
   option: {
     textAlign: 'center',
-    marginVertical: 5,
+    width: 80, // Width to ensure text fits
+    height: 20,
+    fontSize: 14,
   },
   spinButton: {
     marginTop: 20,
@@ -66,10 +66,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     padding: 5,
     borderRadius: 5,
+    marginTop: -10,
   },
   removeButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 

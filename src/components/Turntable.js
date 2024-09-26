@@ -1,6 +1,6 @@
 /**
  * Turntable.js - Main logic for spinning the turntable and managing options.
- * Options are auto-saved and reflected on the turntable in real-time.
+ * Options are auto-saved and reflected on the turntable and input fields in real-time, including removals.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -27,7 +27,8 @@ const Turntable = () => {
     try {
       const savedOptions = await AsyncStorage.getItem(STORAGE_KEY);
       if (savedOptions !== null) {
-        setOptions(JSON.parse(savedOptions));
+        const parsedOptions = JSON.parse(savedOptions);
+        setOptions(parsedOptions);
       }
     } catch (error) {
       console.error('Error loading options from storage:', error);
@@ -42,16 +43,13 @@ const Turntable = () => {
     }
   };
 
-  const addOption = (inputValues) => {
+  const updateOptions = (inputValues) => {
     const updatedOptions = inputValues
       .map((value) => value.trim())
-      .filter((value) => value && !options.includes(value)); // Filter out duplicates and empty inputs
+      .filter((value) => value); // Filter out empty inputs
 
-    if (updatedOptions.length > 0) {
-      const newOptionsList = [...options, ...updatedOptions];
-      setOptions(newOptionsList);
-      saveOptions(newOptionsList);
-    }
+    setOptions(updatedOptions);
+    saveOptions(updatedOptions); // Save updated options list
   };
 
   const spinTurntable = () => {
@@ -77,7 +75,7 @@ const Turntable = () => {
 
   return (
     <View style={styles.container}>
-      <OptionInput onAddOption={addOption} />
+      <OptionInput onUpdateOptions={updateOptions} initialOptions={options} />
       <TurntableVisual spin={spin} options={options} />
       <TouchableOpacity style={styles.spinButton} onPress={spinTurntable}>
         <Text style={styles.spinText}>Spin</Text>

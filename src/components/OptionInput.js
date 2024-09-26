@@ -1,22 +1,30 @@
 /**
  * OptionInput.js - Handles input for adding multiple decision options, each with its own input line.
- * Allows users to remove individual input lines.
+ * Allows users to remove individual input lines and auto-saves changes.
+ * Displays loaded options in the input fields.
  */
 
-import React, { useState } from 'react';
-import { View, TextInput, Button, TouchableOpacity, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text, Button } from 'react-native';
 import styles from '../styles';
 
-const OptionInput = ({ onAddOption }) => {
+const OptionInput = ({ onUpdateOptions, initialOptions }) => {
   const [inputValues, setInputValues] = useState(['']); // Start with one empty input line
+
+  // Load initial options into input fields
+  useEffect(() => {
+    if (initialOptions && initialOptions.length > 0) {
+      setInputValues(initialOptions);
+    }
+  }, [initialOptions]);
 
   const handleAddOption = (index, value) => {
     const updatedInputs = [...inputValues];
     updatedInputs[index] = value;
     setInputValues(updatedInputs);
 
-    // Auto-save the updated option immediately
-    onAddOption(updatedInputs);
+    // Auto-update the options list immediately
+    onUpdateOptions(updatedInputs);
   };
 
   const handleAddNewLine = () => {
@@ -27,8 +35,8 @@ const OptionInput = ({ onAddOption }) => {
     const updatedInputs = inputValues.filter((_, i) => i !== index);
     setInputValues(updatedInputs);
 
-    // Auto-save the updated option list
-    onAddOption(updatedInputs);
+    // Auto-update the options list after removal
+    onUpdateOptions(updatedInputs);
   };
 
   return (
@@ -42,7 +50,7 @@ const OptionInput = ({ onAddOption }) => {
             onChangeText={(value) => handleAddOption(index, value)}
           />
           <TouchableOpacity onPress={() => handleRemoveLine(index)} style={styles.removeButton}>
-            <Text style={styles.removeButtonText}>Remove</Text>
+            <Text style={styles.removeButtonText}>-</Text>
           </TouchableOpacity>
         </View>
       ))}
