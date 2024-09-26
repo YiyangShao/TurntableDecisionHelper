@@ -1,7 +1,7 @@
 /**
  * Turntable.js - Main logic for spinning the turntable and managing options.
  * The turntable now spins a random number of degrees, with a stationary pointer at the top.
- * Plays a sound when the pointer crosses the section border, throttled to avoid high-frequency issues.
+ * The spinning starts fast and slows down gradually at the end.
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -98,7 +98,7 @@ const Turntable = () => {
     }
   };
 
-  // Function to spin the turntable a random number of degrees
+  // Function to spin the turntable a random number of degrees with fast deceleration at the start and slow at the end
   const spinTurntable = () => {
     if (options.length === 0) return;
 
@@ -108,10 +108,11 @@ const Turntable = () => {
     setRotationAngle(newRotationAngle); // Update the rotation angle state
     lastPlayedSection.current = null; // Reset the section tracker
 
+    // Custom easing: Start fast, slow down gradually at the end
     Animated.timing(spinValue, {
-      toValue: newRotationAngle, // Use the new rotation angle
-      duration: 3000,
-      easing: Easing.out(Easing.ease),
+      toValue: newRotationAngle,
+      duration: 5000, // Duration of the spin (5 seconds, can be adjusted)
+      easing: Easing.out(Easing.cubic), // Use cubic easing for a fast-to-slow effect
       useNativeDriver: true,
     }).start(() => {
       const segmentAngle = 360 / options.length;
