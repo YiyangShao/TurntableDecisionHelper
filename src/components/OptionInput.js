@@ -3,6 +3,7 @@
  * Allows users to remove individual input lines and auto-saves changes.
  * Initial placeholders are set to "burger", "taco", and "ramen".
  * The remove button only appears for the third option and beyond.
+ * The placeholder text color is set to gray.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -47,6 +48,7 @@ const OptionInput = ({ onUpdateOptions, initialOptions }) => {
           <TextInput
             style={styles.input}
             placeholder={`Enter option ${index + 1}`}
+            placeholderTextColor="gray"
             value={inputValue}
             onChangeText={(value) => handleAddOption(index, value)}
           />
