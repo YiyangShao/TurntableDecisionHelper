@@ -7,7 +7,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Turntable from './src/components/Turntable';
 
-export default function App() {
+export default function TurntableHelper() {
   return (
     <View style={styles.container}>
       <Turntable />
