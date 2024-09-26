@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   
+  
 });
 
 export default styles;

@@ -1,6 +1,7 @@
 /**
  * TurntableVisual.js - Displays the animated turntable and its options as a pie chart.
- * Includes split lines between sections, with option text in the middle of each section.
+ * Includes split lines between sections, with option text.
+ * The stationary black pointer is handled in Turntable.js.
  */
 
 import React from 'react';
@@ -8,7 +9,7 @@ import { View } from 'react-native';
 import Svg, { G, Circle, Line, Text as SvgText } from 'react-native-svg';
 import styles from '../styles';
 
-const TurntableVisual = ({ spin, options }) => {
+const TurntableVisual = ({ options }) => {
   const radius = 150;  // Increase the radius to make the turntable larger
   const numberOfOptions = options.length;
 

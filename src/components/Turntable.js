@@ -1,6 +1,6 @@
 /**
  * Turntable.js - Main logic for spinning the turntable and managing options.
- * The turntable now spins a random number of degrees.
+ * The turntable now spins a random number of degrees, with a stationary pointer at the top.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -82,13 +82,25 @@ const Turntable = () => {
 
   return (
     <View style={styles.container}>
+      {/* Option inputs */}
       <OptionInput onUpdateOptions={updateOptions} initialOptions={options} />
+
+      {/* Stationary pointer */}
+      <View style={styles.pointer}>
+        <Text style={styles.pointerText}>▼</Text>
+      </View>
+
+      {/* Rotating turntable */}
       <Animated.View style={{ transform: [{ rotate: spin }] }}>
         <TurntableVisual options={options} />
       </Animated.View>
+
+      {/* Spin button */}
       <TouchableOpacity style={styles.spinButton} onPress={spinTurntable}>
         <Text style={styles.spinText}>Spin</Text>
       </TouchableOpacity>
+
+      {/* Display the selected option */}
       {selectedOption && <Text style={styles.resultText}>You selected: {selectedOption}</Text>}
     </View>
   );
