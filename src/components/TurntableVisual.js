@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { View, Text, Animated, StyleSheet } from 'react-native';
+import { View, Text, Animated } from 'react-native';
+import styles from '../styles';
 
 const TurntableVisual = ({ spin, options }) => {
   return (
@@ -15,22 +16,5 @@ const TurntableVisual = ({ spin, options }) => {
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  turntable: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  option: {
-    textAlign: 'center',
-    marginVertical: 5,
-  },
-});
 
 export default TurntableVisual;

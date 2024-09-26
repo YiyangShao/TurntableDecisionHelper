@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
   },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   optionList: {
     maxHeight: 150,
     marginBottom: 20,
@@ -55,6 +60,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 18,
     color: '#000',
+  },
+  removeButton: {
+    marginLeft: 10,
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 5,
+  },
+  removeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

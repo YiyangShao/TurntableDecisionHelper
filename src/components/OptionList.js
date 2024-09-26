@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Button, FlatList } from 'react-native';
+import styles from '../styles';
 
 const OptionList = ({ options, onRemoveOption }) => {
   return (
@@ -20,21 +21,5 @@ const OptionList = ({ options, onRemoveOption }) => {
     />
   );
 };
-
-const styles = StyleSheet.create({
-  optionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 5,
-  },
-  optionList: {
-    maxHeight: 150,
-    marginBottom: 20,
-  },
-  option: {
-    textAlign: 'center',
-  },
-});
 
 export default OptionList;
